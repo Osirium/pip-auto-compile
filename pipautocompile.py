@@ -1,17 +1,22 @@
 #/usr/bin/env python
 import argparse
 import sys
+import subprocess
 
+def compile_file(filename):
+    return subprocess.check_call([sys.executable, "pip-compile", "-r", filename, "-o", filename[0:-2]+".txt", "--verbose", "--generate-hashes"])
 
-def main(argv):
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("language", nargs="+")
+    parser.add_argument("language_version", nargs="+")
     parser.add_argument("files", nargs="+")
 
-    args = parser.parse(sys.argv)
+    args = parser.parse_args(sys.argv)
 
-    print(dir(args))
-    return False
+    for f in args.files:
+        if not compile_file(f):
+            return False
 
 
 if __name__ == "__main__":
