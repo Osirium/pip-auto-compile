@@ -1,4 +1,4 @@
 - id: pip-auto-compile
-  name: pip-auto-compile
+  name: Recompile modified requirements.in
   entry: pip-auto-compile
   language: python
