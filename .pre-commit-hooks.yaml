@@ -1,4 +1,4 @@
 - id: pip-auto-compile
   name: pip-auto-compile
-  entry: python -m scripts.pip-auto-compile
+  entry: pip-auto-compile
   language: python
