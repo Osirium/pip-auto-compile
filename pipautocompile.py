@@ -2,9 +2,10 @@
 import argparse
 import sys
 import subprocess
+from piptools.scripts import compile
 
 def compile_file(filename):
-    return subprocess.check_call([sys.executable, "pip-compile", "-r", filename, "-o", filename[0:-2]+".txt", "--verbose", "--generate-hashes"])
+    return compile.cli(["-r", filename, "-o", filename[0:-2]+".txt", "--verbose", "--generate-hashes"])
 
 def main():
     parser = argparse.ArgumentParser()
