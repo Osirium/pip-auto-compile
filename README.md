@@ -18,6 +18,8 @@ with the correct interpreter version, just specify `language_version` in your pr
           files: python_2_src/requirements(-[^.*])?in$
           language: python
           language_version: python2.7
+          args:
+          - --pip-compile-arg=--allow-unsafe
 ```
 
 
