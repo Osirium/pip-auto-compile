@@ -8,8 +8,6 @@ def compile_file(filename):
 
 def main():
     files = sys.argv[1:]
-    print(files)
-
     for f in files:
         if f.endswith(".txt"):
             # Attempt to find a matching in file if we changed a requirements.txt
