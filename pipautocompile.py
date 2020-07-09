@@ -28,7 +28,7 @@ def main():
                     print("Compiling {}".format(requirementsin))
                     compile_file(requirementsin, pip_args)
                 except SystemExit as e:
-                    if (e.code > 0):
+                    if (e.code != 0):
                         print("Attempted to compile maching `.in` to {}".format(f))
                         print("Could not compile {}".format(requirementsin))
                         print("Perhaps {} doesnt exist".format(requirementsin))
@@ -38,7 +38,7 @@ def main():
             try:
                 compile_file(f, pip_args)
             except SystemExit as e:
-                if (e.code >= 0):
+                if (e.code != 0):
                     print(e)
                     print("Could not compile {}".format(f))
                     return False
