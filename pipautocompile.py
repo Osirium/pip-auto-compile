@@ -10,7 +10,7 @@ from piptools.scripts import compile
 from piptools.exceptions import PipToolsError
 
 def compile_file(filename, pip_args):
-    compile.cli(["-r", str(filename), "-o", str(filename)[0:-2]+"txt", "--verbose", "--generate-hashes"]+pip_args)
+    compile.cli(["-r", str(filename), "-o", str(filename.with_suffix(".txt")), "--verbose", "--generate-hashes"]+pip_args)
 
 def main():
     parser = argparse.ArgumentParser()
