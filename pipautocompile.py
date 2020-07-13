@@ -26,6 +26,7 @@ def chdir(path):
 def compile_file(filename, pip_args):
     with chdir(filename.parent):
         compile.cli(
+            pip_args + 
             [
                 "-r",
                 str(filename.name),
@@ -34,25 +35,20 @@ def compile_file(filename, pip_args):
                 "--verbose",
                 "--generate-hashes",
             ]
-            + pip_args
         )
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--pip-compile-arg", action="append")
     parser.add_argument("files", nargs="+")
 
-    args = parser.parse_args(sys.argv)
+    args, other_args = parser.parse_known_args(sys.argv)
 
     files = sorted({pathlib.Path(p).with_suffix(".in") for p in args.files[1:]})
-    pip_args = []
-    if args.pip_compile_arg:
-        pip_args = args.pip_compile_arg
 
     for f in files:
         try:
-            compile_file(f, pip_args)
+            compile_file(f, other_args)
         except SystemExit as e:
             if e.code != 0:
                 print(e)
