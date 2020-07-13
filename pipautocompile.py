@@ -54,8 +54,6 @@ def main():
                 print(e)
                 print("Could not compile {}".format(f))
                 return False
-            continue
-
 
 if __name__ == "__main__":
     main()
