@@ -28,9 +28,9 @@ def compile_file(filename, pip_args):
         compile.cli(
             [
                 "-r",
-                str(filename),
+                str(filename.name),
                 "-o",
-                str(filename.with_suffix(".txt")),
+                str(filename.with_suffix(".txt").name),
                 "--verbose",
                 "--generate-hashes",
             ]
