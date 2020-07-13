@@ -44,7 +44,7 @@ def main():
 
     args, other_args = parser.parse_known_args(sys.argv)
 
-    files = sorted({pathlib.Path(p).with_suffix(".in") for p in args.files[1:]})
+    files = sorted({pathlib.Path(p).with_suffix(".in") for p in args.files})
 
     for f in files:
         try:
