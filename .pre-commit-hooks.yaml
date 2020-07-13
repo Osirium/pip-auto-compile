@@ -2,5 +2,3 @@
   name: Recompile modified requirements.in
   entry: pip-auto-compile
   language: python
-  args:
-      - --allow-unsafe
