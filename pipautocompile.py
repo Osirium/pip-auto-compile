@@ -42,7 +42,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("files", nargs="+")
 
-    args, other_args = parser.parse_known_args(sys.argv)
+    args, other_args = parser.parse_known_args(sys.argv[1:])
 
     files = sorted({pathlib.Path(p).with_suffix(".in") for p in args.files})
 
