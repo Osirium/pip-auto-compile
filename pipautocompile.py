@@ -1,8 +1,9 @@
-#/usr/bin/env python
+# /usr/bin/env python
 import argparse
 import contextlib
 import os
 import sys
+
 try:
     import pathlib
 except ImportError:
@@ -10,6 +11,7 @@ except ImportError:
 
 from piptools.scripts import compile
 from piptools.exceptions import PipToolsError
+
 
 @contextlib.contextmanager
 def chdir(path):
@@ -20,9 +22,21 @@ def chdir(path):
     finally:
         os.chdir(str(old_wd))
 
+
 def compile_file(filename, pip_args):
     with chdir(filename.parent):
-        compile.cli(["-r", str(filename), "-o", str(filename.with_suffix(".txt")), "--verbose", "--generate-hashes"]+pip_args)
+        compile.cli(
+            [
+                "-r",
+                str(filename),
+                "-o",
+                str(filename.with_suffix(".txt")),
+                "--verbose",
+                "--generate-hashes",
+            ]
+            + pip_args
+        )
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -33,18 +47,19 @@ def main():
 
     files = sorted({pathlib.Path(p).with_suffix(".in") for p in args.files[1:]})
     pip_args = []
-    if ( args.pip_compile_arg):
+    if args.pip_compile_arg:
         pip_args = args.pip_compile_arg
 
     for f in files:
         try:
             compile_file(f, pip_args)
         except SystemExit as e:
-            if (e.code != 0):
+            if e.code != 0:
                 print(e)
                 print("Could not compile {}".format(f))
                 return False
             continue
+
 
 if __name__ == "__main__":
     main()
