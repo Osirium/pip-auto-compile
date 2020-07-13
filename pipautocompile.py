@@ -1,5 +1,7 @@
 #/usr/bin/env python
 import argparse
+import contextlib
+import os
 import sys
 try:
     import pathlib
@@ -9,8 +11,18 @@ except ImportError:
 from piptools.scripts import compile
 from piptools.exceptions import PipToolsError
 
+@contextlib.contextmanager
+def chdir(path):
+    old_wd = pathlib.Path.cwd()
+    os.chdir(str(path))
+    try:
+        yield
+    finally:
+        os.chdir(str(old_wd))
+
 def compile_file(filename, pip_args):
-    compile.cli(["-r", str(filename), "-o", str(filename.with_suffix(".txt")), "--verbose", "--generate-hashes"]+pip_args)
+    with chdir(filename.parent):
+        compile.cli(["-r", str(filename), "-o", str(filename.with_suffix(".txt")), "--verbose", "--generate-hashes"]+pip_args)
 
 def main():
     parser = argparse.ArgumentParser()
