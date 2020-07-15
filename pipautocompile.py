@@ -1,6 +1,7 @@
 # /usr/bin/env python
 import argparse
 import contextlib
+import filelock
 import os
 import sys
 
@@ -9,9 +10,11 @@ try:
 except ImportError:
     import pathlib2 as pathlib
 
-from piptools.scripts import compile
+from piptools.locations import CACHE_DIR
 from piptools.exceptions import PipToolsError
+from piptools.scripts import compile
 
+lock = filelock.FileLock(str(pathlib.Path(CACHE_DIR) / ".pip-auto-compile.lock"))
 
 @contextlib.contextmanager
 def chdir(path):
@@ -24,18 +27,19 @@ def chdir(path):
 
 
 def compile_file(filename, pip_args):
-    with chdir(filename.parent):
-        compile.cli(
-            pip_args + 
-            [
-                "-r",
-                str(filename.name),
-                "-o",
-                str(filename.with_suffix(".txt").name),
-                "--verbose",
-                "--generate-hashes",
-            ]
-        )
+    with lock:
+        with chdir(filename.parent):
+            compile.cli(
+                pip_args + 
+                [
+                    "-r",
+                    str(filename.name),
+                    "-o",
+                    str(filename.with_suffix(".txt").name),
+                    "--verbose",
+                    "--generate-hashes",
+                ]
+            )
 
 
 def main():
