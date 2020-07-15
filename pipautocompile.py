@@ -14,7 +14,9 @@ from piptools.locations import CACHE_DIR
 from piptools.exceptions import PipToolsError
 from piptools.scripts import compile
 
-lock = filelock.FileLock(str(pathlib.Path(CACHE_DIR) / ".pip-auto-compile.lock"))
+
+LOCK_PATH = pathlib.Path(CACHE_DIR) / ".pip-auto-compile.lock"
+lock = filelock.FileLock(str(LOCK_PATH))
 
 @contextlib.contextmanager
 def chdir(path):
@@ -47,7 +49,7 @@ def main():
     parser.add_argument("files", nargs="+")
 
     args, other_args = parser.parse_known_args(sys.argv[1:])
-
+    LOCK_PATH.parent.mkdir(parents=True, exist_ok=True)
     files = sorted({pathlib.Path(p).with_suffix(".in") for p in args.files})
 
     for f in files:
