@@ -18,6 +18,7 @@ from piptools.scripts import compile
 LOCK_PATH = pathlib.Path(CACHE_DIR) / ".pip-auto-compile.lock"
 lock = filelock.FileLock(str(LOCK_PATH))
 
+
 @contextlib.contextmanager
 def chdir(path):
     old_wd = pathlib.Path.cwd()
@@ -30,17 +31,24 @@ def chdir(path):
 
 def compile_file(filename, pip_args):
     with chdir(filename.parent):
-        compile.cli(
-            pip_args + 
-            [
-                "-o",
-                str(filename.with_suffix(".txt").name),
-                "--verbose",
-                "--generate-hashes",
-                "--",
-                str(filename.name),
-            ]
-        )
+        try:
+            compile.cli(
+                pip_args
+                + [
+                    "-o",
+                    str(filename.with_suffix(".txt").name),
+                    "--verbose",
+                    "--generate-hashes",
+                    "--",
+                    str(filename.name),
+                ]
+            )
+            return 0
+        except SystemExit as e:
+            if e.code != 0:
+                print(e)
+                print("Could not compile {}".format(filename))
+            return e.code
 
 
 def main():
@@ -52,14 +60,8 @@ def main():
     files = sorted({pathlib.Path(p).with_suffix(".in") for p in args.files})
 
     with lock:
-        for f in files:
-            try:
-                compile_file(f, other_args)
-            except SystemExit as e:
-                if e.code != 0:
-                    print(e)
-                    print("Could not compile {}".format(f))
-                    return False
+        return max(compile_file(f, other_args) for f in files)
+
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
