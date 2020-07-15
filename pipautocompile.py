@@ -33,12 +33,12 @@ def compile_file(filename, pip_args):
         compile.cli(
             pip_args + 
             [
-                "-r",
-                str(filename.name),
                 "-o",
                 str(filename.with_suffix(".txt").name),
                 "--verbose",
                 "--generate-hashes",
+                "--",
+                str(filename.name),
             ]
         )
 
