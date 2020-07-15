@@ -29,19 +29,18 @@ def chdir(path):
 
 
 def compile_file(filename, pip_args):
-    with lock:
-        with chdir(filename.parent):
-            compile.cli(
-                pip_args + 
-                [
-                    "-r",
-                    str(filename.name),
-                    "-o",
-                    str(filename.with_suffix(".txt").name),
-                    "--verbose",
-                    "--generate-hashes",
-                ]
-            )
+    with chdir(filename.parent):
+        compile.cli(
+            pip_args + 
+            [
+                "-r",
+                str(filename.name),
+                "-o",
+                str(filename.with_suffix(".txt").name),
+                "--verbose",
+                "--generate-hashes",
+            ]
+        )
 
 
 def main():
@@ -52,14 +51,15 @@ def main():
     LOCK_PATH.parent.mkdir(parents=True, exist_ok=True)
     files = sorted({pathlib.Path(p).with_suffix(".in") for p in args.files})
 
-    for f in files:
-        try:
-            compile_file(f, other_args)
-        except SystemExit as e:
-            if e.code != 0:
-                print(e)
-                print("Could not compile {}".format(f))
-                return False
+    with lock:
+        for f in files:
+            try:
+                compile_file(f, other_args)
+            except SystemExit as e:
+                if e.code != 0:
+                    print(e)
+                    print("Could not compile {}".format(f))
+                    return False
 
 if __name__ == "__main__":
     main()
