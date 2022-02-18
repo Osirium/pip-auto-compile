@@ -30,13 +30,14 @@ def chdir(path):
 
 
 def compile_file(filename, pip_args):
+    output_filename = str(filename.with_suffix(".txt").name)
     with chdir(filename.parent):
         try:
             compile.cli(
                 pip_args
                 + [
                     "-o",
-                    str(filename.with_suffix(".txt").name),
+                    output_filename,
                     "--verbose",
                     "--generate-hashes",
                     "--",
@@ -48,6 +49,15 @@ def compile_file(filename, pip_args):
             if e.code != 0:
                 print(e)
                 print("Could not compile {}".format(filename))
+            else:
+                # forces all end lines to be '\n'
+                with open(output_filename, 'rb') as f:
+                    output_content = f.read()
+                fixed_content = b''.join(
+                    line.rstrip(b'\r\n') + b'\n' for line in output_content.splitlines(True)
+                )
+                with open(output_filename, 'wb') as f:
+                    f.write(fixed_content)
             return e.code
 
 
