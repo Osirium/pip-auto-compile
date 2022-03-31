@@ -19,7 +19,7 @@ with the correct interpreter version, just specify `language_version` in your pr
           language: python
           language_version: python2.7
           args:
-          - --pip-compile-arg=--allow-unsafe
+          - --allow-unsafe
 ```
 
 
